@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comunicación Basada en Evidencia — Superstore Sales</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --azul:    #1A56DB;
+    --azul-d:  #1e40af;
+    --naranja: #EA580C;
+    --verde:   #16A34A;
+    --slate:   #0F172A;
+    --slate2:  #1E293B;
+    --gris:    #64748B;
+    --bg:      #F8FAFC;
+    --card:    #FFFFFF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--slate); }
+
+  /* ── PORTADA ── */
+  .cover {
+    min-height: 100vh;
+    background: var(--slate);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+  }
+  .cover-left {
+    padding: 72px 64px;
+    display: flex; flex-direction: column; justify-content: center;
+    background: linear-gradient(160deg, #0f172a 60%, #1e3a5f);
+  }
+  .cover-right {
+    background: linear-gradient(135deg, #1e3a5f 0%, #1A56DB 100%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 48px;
+    position: relative; overflow: hidden;
+  }
+  .cover-right::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .cover-kpi {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    position: relative; z-index: 1;
+  }
+  .kpi-box {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px; padding: 28px 24px;
+  }
+  .kpi-box .num { font-size: 36px; font-weight: 900; color: white; line-height: 1; margin-bottom: 6px; }
+  .kpi-box .lbl { font-size: 12px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; }
+
+  .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: #60A5FA; font-weight: 600; margin-bottom: 20px; }
+  .cover-h1 { font-size: 52px; font-weight: 900; color: white; line-height: 1.1; margin-bottom: 24px; }
+  .cover-h1 em { font-style: normal; color: #60A5FA; }
+  .cover-sub { font-size: 17px; color: rgba(255,255,255,0.65); line-height: 1.7; max-width: 460px; margin-bottom: 48px; }
+  .cover-badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 40px; padding: 10px 20px;
+    color: rgba(255,255,255,0.8); font-size: 13px;
+  }
+  .cover-badge span { width: 8px; height: 8px; background: #4ADE80; border-radius: 50%; }
+
+  /* ── SECCIONES ── */
+  .section { padding: 96px 80px; }
+  .section.dark { background: var(--slate); color: white; }
+  .section.white { background: var(--card); }
+  .section.tinted { background: var(--bg); }
+
+  .section-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 3px; color: var(--azul); margin-bottom: 12px;
+  }
+  .section-label.on-dark { color: #60A5FA; }
+  .section-label.naranja { color: var(--naranja); }
+  .section-label.verde { color: var(--verde); }
+
+  .section-h2 {
+    font-size: 42px; font-weight: 900; line-height: 1.15;
+    margin-bottom: 20px; color: var(--slate);
+  }
+  .section-h2.on-dark { color: white; }
+  .section-lead {
+    font-size: 18px; line-height: 1.75; color: var(--gris);
+    max-width: 680px; margin-bottom: 64px;
+  }
+  .section-lead.on-dark { color: rgba(255,255,255,0.6); }
+
+  /* ── LAYOUT RETO ── */
+  .reto-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 56px; align-items: start; }
+  .reto-grid.reverse { grid-template-columns: 1.6fr 1fr; }
+  .reto-text {}
+  .reto-num {
+    font-size: 100px; font-weight: 900; line-height: 1;
+    color: rgba(26,86,219,0.12); margin-bottom: -12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .reto-num.naranja { color: rgba(234,88,12,0.12); }
+  .reto-num.verde { color: rgba(22,163,74,0.12); }
+  .reto-title { font-size: 30px; font-weight: 800; margin-bottom: 16px; color: var(--slate); }
+  .reto-title.on-dark { color: white; }
+  .reto-body { font-size: 15px; line-height: 1.8; color: var(--gris); }
+  .reto-body.on-dark { color: rgba(255,255,255,0.65); }
+  .insight-box {
+    margin-top: 28px; padding: 22px 24px;
+    border-left: 4px solid var(--azul);
+    background: #EFF6FF; border-radius: 0 10px 10px 0;
+    font-size: 14px; line-height: 1.7; color: #1e40af;
+  }
+  .insight-box.naranja { border-color: var(--naranja); background: #FFF7ED; color: #9a3412; }
+  .insight-box.verde   { border-color: var(--verde);   background: #F0FDF4; color: #14532d; }
+  .insight-box strong  { display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; }
+
+  /* ── CHART CARD ── */
+  .chart-card {
+    background: white; border-radius: 20px;
+    box-shadow: 0 4px 40px rgba(15,23,42,0.08);
+    padding: 32px 32px 28px;
+  }
+  .chart-card .chart-title { font-size: 15px; font-weight: 700; color: var(--slate); margin-bottom: 4px; }
+  .chart-card .chart-sub   { font-size: 12px; color: var(--gris); margin-bottom: 24px; }
+  .chart-canvas { position: relative; }
+
+  /* ── BEFORE/AFTER ── */
+  .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .ba-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 2px; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .ba-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .ba-label.bad  { color: #DC2626; }
+  .ba-label.good { color: #16A34A; }
+
+  /* ── ACTO DE HABLA ── */
+  .speech-act {
+    background: linear-gradient(135deg, #064e3b, #065f46);
+    border-radius: 20px; padding: 48px;
+    color: white; margin-bottom: 48px;
+  }
+  .speech-act h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: #6EE7B7; margin-bottom: 8px; }
+  .speech-act .act-name { font-size: 38px; font-weight: 900; margin-bottom: 20px; }
+  .speech-act p { font-size: 16px; line-height: 1.8; color: rgba(255,255,255,0.8); max-width: 600px; }
+  .narrative-steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 32px; }
+  .step-card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px; padding: 24px;
+    border-top: 3px solid rgba(255,255,255,0.2);
+  }
+  .step-card .step-n { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #6EE7B7; margin-bottom: 8px; }
+  .step-card p { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.85); }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: #0F172A; color: rgba(255,255,255,0.4);
+    padding: 40px 80px; text-align: center; font-size: 13px; line-height: 2;
+  }
+  .footer strong { color: rgba(255,255,255,0.7); }
+
+  @media (max-width: 900px) {
+    .cover { grid-template-columns: 1fr; }
+    .cover-right { display: none; }
+    .reto-grid, .reto-grid.reverse, .ba-grid, .narrative-steps { grid-template-columns: 1fr; }
+    .section { padding: 56px 24px; }
+    .cover-left { padding: 48px 24px; }
+    .cover-h1 { font-size: 36px; }
+    .section-h2 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════ PORTADA ══════════ -->
+<section class="cover">
+  <div class="cover-left">
+    <div class="eyebrow">Universidad EAFIT &mdash; Maestría en Ciencia de Datos</div>
+    <h1 class="cover-h1">Cuando los datos<br><em>hablan solos</em></h1>
+    <p class="cover-sub">Tres principios de visualización aplicados a datos reales de ventas: jerarquía, contraste y persuasión.</p>
+    <div class="cover-badge"><span></span> Superstore Sales &mdash; 2015–2018 &mdash; 9.800 transacciones</div>
+  </div>
+  <div class="cover-right">
+    <div class="cover-kpi">
+      <div class="kpi-box">
+        <div class="num">$2.3M</div>
+        <div class="lbl">Ventas totales</div>
+      </div>
+      <div class="kpi-box">
+        <div class="num">17</div>
+        <div class="lbl">Subcategorías</div>
+      </div>
+      <div class="kpi-box">
+        <div class="num">4</div>
+        <div class="lbl">Regiones</div>
+      </div>
+      <div class="kpi-box">
+        <div class="num">+65%</div>
+        <div class="lbl">Pico Nov 2018</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════ RETO 1 — JERARQUÍA ══════════ -->
+<section class="section white">
+  <div class="section-label">Reto 1 &mdash; Jerarquía</div>
+  <div class="reto-grid">
+    <div class="reto-text">
+      <div class="reto-num">01</div>
+      <h2 class="reto-title">Una copiadora vale lo que 23 grapadoras</h2>
+      <p class="reto-body">
+        El volumen total de ventas puede engañar: Phones y Chairs parecen liderar,
+        pero esa cifra depende de cuántas unidades se vendieron. La pregunta estratégica
+        real es otra: <strong>¿qué producto genera más valor por cada transacción?</strong>
+        <br><br>
+        Con un ticket promedio de <strong>$2.216 por venta</strong>, las Copiadoras no tienen
+        competencia. Cada negociación de una copiadora equivale a vender 23 grapadoras,
+        32 resmas de papel o 6 teléfonos. Eso no es discutible: es aritmética.
+        <br><br>
+        Una fuerza de ventas que dedica el mismo tiempo a Fasteners que a Copiers
+        está destruyendo valor sin saberlo.
+      </p>
+      <div class="insight-box">
+        <strong>Hallazgo clave</strong>
+        Copiers: $2.216 promedio por transacción. Machines: $1.646. A partir de Tables
+        el ticket cae a $646 y nunca vuelve a subir. La jerarquía es un acantilado, no una pendiente.
+      </div>
+    </div>
+    <div>
+      <div class="chart-card">
+        <div class="chart-title">Valor promedio por transacción según subcategoría</div>
+        <div class="chart-sub">USD por venta &mdash; ordenado de mayor a menor &mdash; Fuente: Superstore Sales, Kaggle</div>
+        <div class="chart-canvas"><canvas id="chart1" height="420"></canvas></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════ RETO 2 — CONTRASTE ══════════ -->
+<section class="section dark">
+  <div class="section-label on-dark naranja">Reto 2 &mdash; Contraste</div>
+  <div style="max-width:860px; margin-bottom:52px;">
+    <div class="reto-num naranja">02</div>
+    <h2 class="reto-title on-dark">Un mes que nada contra la corriente</h2>
+    <p class="reto-body on-dark">
+      Entre 2015 y 2018, las ventas crecieron año tras año en prácticamente todos los meses.
+      Hay un solo punto que rompe esa tendencia sin hacer ruido:
+      <strong>febrero de 2018 retrocedió vs. febrero de 2017</strong> —
+      el único mes del año que fue peor que el año anterior, en el año que fue mejor en todo lo demás.
+      <br><br>
+      En el gráfico sin contraste ves 4 líneas y ninguna señal de alerta.
+      Con los febreros marcados, el patrón es inmediato:
+      tres años de crecimiento sostenido en febrero y luego, una caída.
+      Eso no se ve por tamaño — se ve por contexto. Por eso el contraste es necesario.
+    </p>
+  </div>
+
+  <div class="ba-grid" style="gap:32px; margin-bottom:24px;">
+    <div>
+      <div class="ba-label bad" style="margin-bottom:12px;">
+        <div class="ba-dot" style="background:#DC2626"></div> Sin contraste — 4 líneas, ninguna historia
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Ventas por mes — comparación anual (2015–2018)</div>
+        <div class="chart-sub">¿En qué mes rompió la tendencia de crecimiento?</div>
+        <div class="chart-canvas"><canvas id="chart2a" height="220"></canvas></div>
+      </div>
+    </div>
+    <div>
+      <div class="ba-label good" style="margin-bottom:12px;">
+        <div class="ba-dot" style="background:#16A34A"></div> Con contraste — la anomalía emerge
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Ventas por mes — comparación anual (2015–2018)</div>
+        <div class="chart-sub">Febrero: 3 años creciendo, 2018 retrocede.</div>
+        <div class="chart-canvas"><canvas id="chart2b" height="220"></canvas></div>
+      </div>
+    </div>
+  </div>
+  <div class="insight-box naranja" style="max-width:860px;">
+    <strong>Por qué este caso justifica el contraste</strong>
+    Febrero 2018 ($19.921) no es el mínimo del chart ni el máximo — es un valor intermedio.
+    Solo es anómalo porque <em>rompe 3 años de tendencia creciente</em> en ese mismo mes.
+    Sin color eso es invisible. Con contraste, es la primera pregunta de la reunión.
+  </div>
+</section>
+
+
+<!-- ══════════ RETO 3 — PERSUASIÓN ══════════ -->
+<section class="section tinted">
+  <div class="section-label verde">Reto 3 &mdash; Persuasión</div>
+  <div class="speech-act">
+    <h3>Acto de habla</h3>
+    <div class="act-name">Convencer</div>
+    <p>Este gráfico no describe datos. Argumenta una acción: <strong>redirigir inversión comercial</strong>
+    hacia la región con mayor brecha de rendimiento. El color no decora — acusa.</p>
+    <div class="narrative-steps">
+      <div class="step-card">
+        <div class="step-n">01 — Contexto</div>
+        <p>4 regiones operan con el mismo portafolio. Las condiciones de partida son equivalentes.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-n">02 — Hallazgo</div>
+        <p>South genera $389K &mdash; apenas el 17% del total. West, con condiciones similares, produce $710K.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-n">03 — Recomendación</div>
+        <p>La brecha del 82% entre South y West no es de mercado: es de ejecución. Hay que intervenir.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="reto-grid">
+    <div>
+      <div class="chart-card">
+        <div class="chart-title">South concentra solo el 17% de ventas — intervención urgente</div>
+        <div class="chart-sub">Ventas totales por región (2015–2018) &mdash; Fuente: Superstore Sales, Kaggle</div>
+        <div class="chart-canvas"><canvas id="chart3" height="300"></canvas></div>
+      </div>
+    </div>
+    <div class="reto-text" style="padding-top:24px;">
+      <div class="reto-num verde">03</div>
+      <h2 class="reto-title">El problema no es el mercado</h2>
+      <p class="reto-body">
+        West y East juntos representan el 59% de las ventas. South, con los mismos productos
+        y los mismos segmentos de cliente, se queda en el 17%.
+        <br><br>
+        Esa brecha no se explica por el tamaño del mercado ni por el portafolio.
+        Se explica por la fuerza y la estrategia comercial sobre el terreno.
+        La oportunidad de crecimiento más rápida no está en lanzar nuevos productos
+        &mdash; está en llevar South al nivel de sus pares.
+      </p>
+      <div class="insight-box verde">
+        <strong>Decisión implícita</strong>
+        Si South alcanzara la media de las otras tres regiones, generaría $280K adicionales al año
+        &mdash; un incremento del 72% sin expandir el portafolio.
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer class="footer">
+  <strong>Taller — Evaluación 1 · Comunicación Basada en Evidencia</strong><br>
+  Universidad EAFIT &mdash; Maestría en Ciencia de Datos &mdash; Unidad 1<br>
+  Dataset: Superstore Sales &mdash; Kaggle (rohitsahoo/sales-forecasting)
+</footer>
+
+
+<script>
+Chart.register(window['chartjs-plugin-annotation']);
+
+Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+Chart.defaults.color = '#64748B';
+
+const BLUE   = '#1A56DB';
+const ORANGE = '#EA580C';
+const GREEN  = '#16A34A';
+const GRAY   = '#CBD5E1';
+const RED    = '#DC2626';
+
+// ═══════════════════════════════════════
+// CHART 1 — Jerarquía: ticket promedio
+// Chart.js indexAxis:'y' pinta labels[0] en la fila de ABAJO.
+// Para tener Copiers arriba necesitamos el array en orden ASCENDENTE
+// (Fasteners primero, Copiers último → Copiers queda en la fila superior).
+// ═══════════════════════════════════════
+const avgLabels = ["Copiers","Machines","Tables","Chairs","Bookcases","Phones","Storage","Supplies","Appliances","Accessories","Binders","Furnishings","Envelopes","Paper","Labels","Art","Fasteners"];
+const avgValues = [2216,1646,646,532,504,374,264,252,228,217,134,96,65,57,35,34,14];
+
+// Ascendente: Fasteners (abajo) … Copiers (arriba)
+const labelsAsc = [...avgLabels].reverse();
+const valuesAsc = [...avgValues].reverse();
+
+new Chart(document.getElementById('chart1'), {
+  type: 'bar',
+  data: {
+    labels: labelsAsc,
+    datasets: [{
+      data: valuesAsc,
+      backgroundColor: labelsAsc.map(l => l === 'Copiers' ? BLUE : GRAY),
+      borderRadius: 6,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    animation: { duration: 900, easing: 'easeOutQuart' },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => `  $${ctx.raw.toLocaleString('es-CO')} por transacción`
+        }
+      },
+      annotation: {
+        annotations: {
+          val: {
+            type: 'label',
+            xValue: 2216,
+            yValue: 'Copiers',
+            xAdjust: -52,
+            content: '$2.216',
+            color: 'white',
+            font: { size: 12, weight: 'bold' },
+          }
+        }
+      }
+    },
+    scales: {
+      x: { display: false, grid: { display: false }, max: 2700 },
+      y: {
+        reverse: true,          // ← fuerza Copiers (último en array) en la fila de ARRIBA
+        grid: { display: false },
+        border: { display: false },
+        ticks: {
+          font: { size: 12 },
+          color: ctx => ctx.tick.label === 'Copiers' ? BLUE : '#94A3B8',
+        }
+      }
+    }
+  }
+});
+
+
+// ═══════════════════════════════════════
+// Datos anuales por mes (eje X = Ene–Dic)
+// ═══════════════════════════════════════
+const monthLabels = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const d2015 = [14206,4520,55206,27907,23644,34323,33782,27118,81624,31453,77908,68167];
+const d2016 = [18067,11951,32339,34154,29960,23599,28608,36818,63134,31012,75249,74544];
+const d2017 = [18542,22979,51165,38680,56657,39724,38321,30542,69193,59583,79066,95739];
+const d2018 = [43476,19921,58863,35542,43826,48191,44825,62838,86153,77448,117938,83030];
+
+// Puntos de febrero: índice 1 en cada dataset
+const febPoints = (data, color) => data.map((v,i) => i === 1 ? color : 'transparent');
+const febRadius = data => data.map((_,i) => i === 1 ? 7 : 0);
+
+// ── CHART 2A: ANTES — 4 líneas del mismo azul, indistinguibles
+new Chart(document.getElementById('chart2a'), {
+  type: 'line',
+  data: {
+    labels: monthLabels,
+    datasets: [
+      { data: d2015, borderColor: '#93C5FD', borderWidth: 1.8, pointRadius: 0, fill: false, tension: 0.3 },
+      { data: d2016, borderColor: '#60A5FA', borderWidth: 1.8, pointRadius: 0, fill: false, tension: 0.3 },
+      { data: d2017, borderColor: '#3B82F6', borderWidth: 1.8, pointRadius: 0, fill: false, tension: 0.3 },
+      { data: d2018, borderColor: '#1D4ED8', borderWidth: 1.8, pointRadius: 0, fill: false, tension: 0.3 },
+    ]
+  },
+  options: {
+    responsive: true,
+    animation: { duration: 700 },
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: false },
+    },
+    scales: {
+      x: { grid: { display: false }, border: { display: false }, ticks: { color: '#94A3B8', font: { size: 10 } } },
+      y: { display: false, grid: { display: false }, border: { display: false } }
+    }
+  }
+});
+
+// ── CHART 2B: DESPUÉS — 2015/16/17 gris, 2018 azul, febreros en naranja
+new Chart(document.getElementById('chart2b'), {
+  type: 'line',
+  data: {
+    labels: monthLabels,
+    datasets: [
+      // Contexto (fondo gris)
+      { data: d2015, borderColor: '#E2E8F0', borderWidth: 1.5, pointRadius: febRadius(d2015), pointBackgroundColor: febPoints(d2015, ORANGE), pointBorderColor: febPoints(d2015, ORANGE), fill: false, tension: 0.3 },
+      { data: d2016, borderColor: '#CBD5E1', borderWidth: 1.5, pointRadius: febRadius(d2016), pointBackgroundColor: febPoints(d2016, ORANGE), pointBorderColor: febPoints(d2016, ORANGE), fill: false, tension: 0.3 },
+      { data: d2017, borderColor: '#94A3B8', borderWidth: 1.5, pointRadius: febRadius(d2017), pointBackgroundColor: febPoints(d2017, ORANGE), pointBorderColor: febPoints(d2017, ORANGE), fill: false, tension: 0.3 },
+      // 2018 destacado en azul — pero su febrero también en naranja
+      { data: d2018, borderColor: BLUE,      borderWidth: 2.5, pointRadius: febRadius(d2018), pointBackgroundColor: febPoints(d2018, ORANGE), pointBorderColor: febPoints(d2018, ORANGE), fill: false, tension: 0.3 },
+    ]
+  },
+  options: {
+    responsive: true,
+    animation: { duration: 900 },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: { label: ctx => `  $${ctx.raw.toLocaleString('es-CO')}` }
+      },
+      annotation: {
+        annotations: {
+          // Flecha conectando los 4 febreros con etiqueta
+          tendLine: {
+            type: 'line',
+            xMin: 'Feb', xMax: 'Feb',
+            borderColor: 'rgba(234,88,12,0.25)',
+            borderWidth: 20,
+            borderDash: [],
+          },
+          lbl: {
+            type: 'label',
+            xValue: 'Mar',
+            yValue: 92000,
+            content: ['Feb 2017→2018', '−13%  único retroceso'],
+            color: ORANGE,
+            font: { size: 11, weight: 'bold' },
+            textAlign: 'left',
+          }
+        }
+      }
+    },
+    scales: {
+      x: { grid: { display: false }, border: { display: false }, ticks: { color: '#94A3B8', font: { size: 10 } } },
+      y: { display: false, grid: { display: false }, border: { display: false } }
+    }
+  }
+});
+
+
+// ═══════════════════════════════════════
+// CHART 3 — Persuasión: regiones
+// ═══════════════════════════════════════
+const regLabels = ["West","East","Central","South"];
+const regValues = [710220, 669519, 492647, 389151];
+const regTotal  = regValues.reduce((a,b) => a+b, 0);
+
+new Chart(document.getElementById('chart3'), {
+  type: 'bar',
+  data: {
+    labels: regLabels,
+    datasets: [{
+      data: regValues,
+      backgroundColor: regLabels.map(r => r === 'South' ? ORANGE : GRAY),
+      borderRadius: 10,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true,
+    animation: { duration: 900, easing: 'easeOutQuart' },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => `  $${ctx.raw.toLocaleString('es-CO')} — ${(ctx.raw/regTotal*100).toFixed(0)}% del total`
+        }
+      },
+      annotation: {
+        annotations: {
+          southLabel: {
+            type: 'label',
+            xValue: 'South',
+            yValue: regValues[3] + 30000,
+            content: ['17% del total'],
+            color: ORANGE,
+            font: { size: 12, weight: 'bold' },
+            textAlign: 'center',
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        border: { display: false },
+        ticks: {
+          font: { size: 13 },
+          color: ctx => ctx.tick.label === 'South' ? ORANGE : '#64748B',
+        }
+      },
+      y: { display: false, grid: { display: false } }
+    }
+  }
+});
+</script>
+</body>
+</html>
