@@ -105,14 +105,20 @@ mensual = df.groupby("YearMonth")["Sales"].sum().reset_index()
 mensual["YearMonth"] = mensual["YearMonth"].dt.to_timestamp()
 mensual = mensual.sort_values("YearMonth").reset_index(drop=True)
 
-# Identificar el pico máximo (anomalía positiva)
-idx_pico = mensual["Sales"].idxmax()
-pico_fecha = mensual.loc[idx_pico, "YearMonth"]
-pico_valor = mensual.loc[idx_pico, "Sales"]
+# Calcular cambio porcentual para encontrar una verdadera anomalía (caída drástica)
+mensual["pct_change"] = mensual["Sales"].pct_change() * 100
+# Ignorar la transición de Diciembre a Enero (estacionalidad esperada)
+mensual.loc[mensual["YearMonth"].dt.month == 1, "pct_change"] = None
+
+# Identificar la mayor caída porcentual (anomalía negativa)
+idx_anomalia = mensual["pct_change"].astype(float).idxmin()
+anom_fecha = mensual.loc[idx_anomalia, "YearMonth"]
+anom_valor = mensual.loc[idx_anomalia, "Sales"]
+anom_pct = mensual.loc[idx_anomalia, "pct_change"]
 
 fig, axes = plt.subplots(1, 2, figsize=(14, 5), sharey=True)
 fig.suptitle(
-    "Contraste Antes / Después — Detección del Pico de Ventas",
+    "Contraste Antes / Después — Detección de Anomalía (Caída de Ventas)",
     fontsize=13, fontweight="bold", y=1.02,
 )
 
@@ -133,23 +139,24 @@ ax2 = axes[1]
 ax2.plot(mensual["YearMonth"], mensual["Sales"], color="#BDBDBD", linewidth=1.8, zorder=1)
 ax2.scatter(mensual["YearMonth"], mensual["Sales"], color="#BDBDBD", s=30, zorder=2)
 
-# Figura: el pico en rojo vibrante
-ax2.scatter(pico_fecha, pico_valor, color="#D32F2F", s=120, zorder=5, linewidths=1.5)
+# Figura: la anomalía en rojo vibrante
+ax2.scatter(anom_fecha, anom_valor, color="#D32F2F", s=120, zorder=5, linewidths=1.5)
 ax2.plot(
-    [mensual.loc[idx_pico - 1, "YearMonth"], pico_fecha, mensual.loc[idx_pico + 1, "YearMonth"]],
-    [mensual.loc[idx_pico - 1, "Sales"], pico_valor, mensual.loc[idx_pico + 1, "Sales"]],
+    [mensual.loc[idx_anomalia - 1, "YearMonth"], anom_fecha, mensual.loc[idx_anomalia + 1, "YearMonth"]],
+    [mensual.loc[idx_anomalia - 1, "Sales"], anom_valor, mensual.loc[idx_anomalia + 1, "Sales"]],
     color="#D32F2F", linewidth=2.5, zorder=4,
 )
 
 # Anotación directa sobre el gráfico: insight en 5-8 palabras
 ax2.annotate(
-    f"Pico +{((pico_valor / mensual['Sales'].mean() - 1) * 100):.0f}% sobre la media — Nov 2018",
-    xy=(pico_fecha, pico_valor),
-    xytext=(pico_fecha - pd.DateOffset(months=14), pico_valor * 0.88),
+    f"Caída atípica ({anom_pct:.0f}%) — {anom_fecha.strftime('%b %Y')}",
+    xy=(anom_fecha, anom_valor),
+    xytext=(anom_fecha + pd.DateOffset(months=4), anom_valor + 8000),
     fontsize=8.5,
     color="#B00020",
     fontweight="bold",
     arrowprops=dict(arrowstyle="->", color="#B00020", lw=1.4),
+    bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.85, edgecolor="none"),
 )
 
 ax2.set_title("DESPUÉS — Con contraste aplicado", fontsize=11, color="#1B5E20", fontweight="bold")
@@ -217,10 +224,11 @@ for bar, row in zip(bars, ventas_region.itertuples()):
 ax.annotate(
     "Solo 17% del total —\n¿dónde está el equipo comercial?",
     xy=(ventas_region[ventas_region["Region"] == "South"].index[0], ventas_region.loc[ventas_region["Region"] == "South", "Sales"].values[0] / 2),
-    xytext=(3.35, ventas_region["Sales"].max() * 0.55),
+    xytext=(3.5, ventas_region["Sales"].max() * 0.70),
     fontsize=8.5, color="#BF360C", fontweight="bold",
     arrowprops=dict(arrowstyle="->", color="#BF360C", lw=1.3),
     ha="right",
+    bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.85, edgecolor="none"),
 )
 
 # Título accionable: comunica la acción, no describe el gráfico

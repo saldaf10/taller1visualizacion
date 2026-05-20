@@ -150,48 +150,23 @@ html = f"""<!DOCTYPE html>
 <!-- PORTADA -->
 <section class="portada">
   <div class="badge">Universidad EAFIT &mdash; Maestr&iacute;a en Ciencia de Datos</div>
-  <h1>Taller &mdash; Evaluaci&oacute;n 1<br><span>Comunicaci&oacute;n Basada en Evidencia</span></h1>
-  <p class="subtitulo">Unidad 1: Fundamentos de la Comunicaci&oacute;n Visual y Estrategia de Negocio<br>
-  Dataset: Superstore Sales &mdash; Kaggle (rohitsahoo/sales-forecasting)</p>
+  <h1>Comunicaci&oacute;n Basada en Evidencia<br><span>An&aacute;lisis Estrat&eacute;gico</span></h1>
+  <p class="subtitulo">Dataset: Superstore Sales &mdash; Kaggle (rohitsahoo/sales-forecasting)</p>
   <div class="meta">
-    <div class="meta-item"><label>Peso</label><span>15% de la nota final</span></div>
-    <div class="meta-item"><label>Retos</label><span>3 &mdash; 33 / 33 / 34%</span></div>
     <div class="meta-item"><label>Dataset</label><span>9.800 registros &middot; 18 variables</span></div>
     <div class="meta-item"><label>Periodo</label><span>2015 &mdash; 2018</span></div>
   </div>
-  <div class="formula">
-    <strong>F&oacute;rmula del curso:</strong><br>
-    Contexto + Datos + Contraste = Mensaje<br><br>
-    Criterio de maestr&iacute;a (5.0): el tomador de decisiones puede responder<br>
-    <em>"&iquest;Qu&eacute; debo hacer hoy?"</em> con solo mirar tu trabajo por <strong>5 segundos</strong>.
-  </div>
 </section>
 
-<!-- CRITERIOS -->
-<section class="seccion alt">
-  <div class="seccion-titulo">R&uacute;brica</div>
-  <h2 class="seccion-h2">Ejes de evaluaci&oacute;n por reto</h2>
-  <table class="tabla-criterios">
-    <thead>
-      <tr><th>Eje</th><th>Qu&eacute; mide</th><th>Peso</th></tr>
-    </thead>
-    <tbody>
-      <tr><td><strong>T&eacute;cnico</strong></td><td>Uso correcto de librer&iacute;as Python y limpieza de c&oacute;digo</td><td><span class="pill pill-azul">40%</span></td></tr>
-      <tr><td><strong>Narrativo</strong></td><td>Claridad del mensaje y jerarqu&iacute;a visual</td><td><span class="pill pill-verde">40%</span></td></tr>
-      <tr><td><strong>Cr&iacute;tico</strong></td><td>Justificaci&oacute;n de la elecci&oacute;n del gr&aacute;fico</td><td><span class="pill pill-naranja">20%</span></td></tr>
-    </tbody>
-  </table>
-</section>
 
-<hr class="divider">
 
 <!-- RETO 1 -->
 <section class="seccion">
   <div class="reto-header">
     <div class="reto-num">1</div>
     <div class="reto-info">
-      <div class="tag tag-azul">Reto 1 &mdash; 33% &bull; Jerarqu&iacute;a</div>
-      <h2>"Ingenier&iacute;a de la Atenci&oacute;n"</h2>
+      <div class="tag tag-azul">An&aacute;lisis 1 &bull; Jerarqu&iacute;a</div>
+      <h2>Ingenier&iacute;a de la Atenci&oacute;n</h2>
     </div>
   </div>
   <div class="justificacion">
@@ -205,27 +180,16 @@ html = f"""<!DOCTYPE html>
   <div class="grafica-container" style="margin-top:28px;">
     <img src="data:image/png;base64,{imgs['reto1_jerarquia']}" alt="Reto 1 - Jerarquia">
   </div>
-  <div class="grid-2">
-    <div class="card">
-      <h4 style="color:#1565C0;">Decisiones de dise&ntilde;o</h4>
-      <ul class="checklist">
-        <li><span class="check-ok">&#10003;</span> Barras ordenadas de mayor a menor (no por defecto)</li>
-        <li><span class="check-ok">&#10003;</span> Gris neutro en todas las subcategor&iacute;as excepto la l&iacute;der</li>
-        <li><span class="check-ok">&#10003;</span> Azul institucional (#1565C0) solo en Phones</li>
-        <li><span class="check-ok">&#10003;</span> Sin grilla, sin bordes, sin eje X redundante</li>
-        <li><span class="check-ok">&#10003;</span> Etiquetas de valor en cada barra (reduce carga cognitiva)</li>
-        <li><span class="check-ok">&#10003;</span> T&iacute;tulo accionable, no descriptivo</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h4 style="color:#1565C0;">Checklist de maestr&iacute;a</h4>
-      <ul class="checklist">
-        <li><span class="check-ok">&#10003;</span> Dato prioritario salta a la vista sin leer etiquetas</li>
-        <li><span class="check-ok">&#10003;</span> C&oacute;digo limpio con comentarios que justifican decisiones visuales</li>
-        <li><span class="check-ok">&#10003;</span> Elementos decorativos eliminados (fondo, grilla, colores innecesarios)</li>
-        <li><span class="check-ok">&#10003;</span> Incluye t&iacute;tulo, eje Y y fuente del dato</li>
-      </ul>
-    </div>
+  <div class="card" style="margin-top:32px;">
+    <h4 style="color:#1565C0;">Decisiones de dise&ntilde;o</h4>
+    <ul class="checklist" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px;">
+      <li><span class="check-ok">&#10003;</span> Barras ordenadas de mayor a menor (no por defecto)</li>
+      <li><span class="check-ok">&#10003;</span> Gris neutro en todas las subcategor&iacute;as excepto la l&iacute;der</li>
+      <li><span class="check-ok">&#10003;</span> Azul institucional (#1565C0) solo en Phones</li>
+      <li><span class="check-ok">&#10003;</span> Sin grilla, sin bordes, sin eje X redundante</li>
+      <li><span class="check-ok">&#10003;</span> Etiquetas de valor en cada barra (reduce carga cognitiva)</li>
+      <li><span class="check-ok">&#10003;</span> T&iacute;tulo accionable, no descriptivo</li>
+    </ul>
   </div>
 </section>
 
@@ -245,32 +209,21 @@ html = f"""<!DOCTYPE html>
     continua (2015&ndash;2018), lo que hace que la l&iacute;nea temporal sea la representaci&oacute;n natural para
     mostrar tendencia y detectar anomal&iacute;as. La comparaci&oacute;n Antes/Despu&eacute;s demuestra con precisi&oacute;n
     qu&eacute; cambi&oacute; y por qu&eacute;: en la versi&oacute;n "Antes" todos los meses tienen el mismo tratamiento
-    visual; en la versi&oacute;n "Despu&eacute;s" el contexto (gris) act&uacute;a como fondo y el pico de noviembre
-    2018 (rojo) act&uacute;a como figura, aplicando el principio de figura-fondo de la Gestalt.
+    visual; en la versi&oacute;n "Despu&eacute;s" el contexto (gris) act&uacute;a como fondo y la ca&iacute;da de febrero
+    de 2015 (rojo) act&uacute;a como figura, aplicando el principio de figura-fondo de la Gestalt.
   </div>
   <div class="grafica-container" style="margin-top:28px;">
     <img src="data:image/png;base64,{imgs['reto2_contraste']}" alt="Reto 2 - Contraste">
   </div>
-  <div class="grid-2">
-    <div class="card">
-      <h4 style="color:#E65100;">Decisiones de dise&ntilde;o</h4>
-      <ul class="checklist">
-        <li><span class="check-ok" style="color:#E65100;">&#10003;</span> L&iacute;nea hist&oacute;rica en gris neutro (contexto / fondo)</li>
-        <li><span class="check-ok" style="color:#E65100;">&#10003;</span> Pico de noviembre 2018 en rojo vibrante (figura)</li>
-        <li><span class="check-ok" style="color:#E65100;">&#10003;</span> Anotaci&oacute;n directa sobre el gr&aacute;fico con insight en 7 palabras</li>
-        <li><span class="check-ok" style="color:#E65100;">&#10003;</span> Comparaci&oacute;n Antes/Despu&eacute;s en el mismo entregable</li>
-        <li><span class="check-ok" style="color:#E65100;">&#10003;</span> T&iacute;tulos ANTES (rojo) / DESPU&Eacute;S (verde) para guiar la lectura</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h4 style="color:#E65100;">Checklist de maestr&iacute;a</h4>
-      <ul class="checklist">
-        <li><span class="check-ok" style="color:#E65100;">&#10003;</span> Comparaci&oacute;n Antes/Despu&eacute;s presente en el entregable</li>
-        <li><span class="check-ok" style="color:#E65100;">&#10003;</span> Anomal&iacute;a evidente en menos de 3 segundos sin leer el t&iacute;tulo</li>
-        <li><span class="check-ok" style="color:#E65100;">&#10003;</span> Anotaci&oacute;n explica el insight directamente sobre el gr&aacute;fico</li>
-        <li><span class="check-ok" style="color:#E65100;">&#10003;</span> Justificaci&oacute;n del contraste documentada en el c&oacute;digo</li>
-      </ul>
-    </div>
+  <div class="card" style="margin-top:32px;">
+    <h4 style="color:#E65100;">Decisiones de dise&ntilde;o</h4>
+    <ul class="checklist" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px;">
+      <li><span class="check-ok" style="color:#E65100;">&#10003;</span> L&iacute;nea hist&oacute;rica en gris neutro (contexto / fondo)</li>
+      <li><span class="check-ok" style="color:#E65100;">&#10003;</span> Ca&iacute;da at&iacute;pica de febrero de 2015 en rojo vibrante (figura)</li>
+      <li><span class="check-ok" style="color:#E65100;">&#10003;</span> Anotaci&oacute;n directa sobre el gr&aacute;fico con insight en 7 palabras</li>
+      <li><span class="check-ok" style="color:#E65100;">&#10003;</span> Comparaci&oacute;n Antes/Despu&eacute;s en el mismo entregable</li>
+      <li><span class="check-ok" style="color:#E65100;">&#10003;</span> T&iacute;tulos ANTES (rojo) / DESPU&Eacute;S (verde) para guiar la lectura</li>
+    </ul>
   </div>
 </section>
 
@@ -281,8 +234,8 @@ html = f"""<!DOCTYPE html>
   <div class="reto-header">
     <div class="reto-num verde">3</div>
     <div class="reto-info">
-      <div class="tag tag-verde">Reto 3 &mdash; 34% &bull; Persuasi&oacute;n</div>
-      <h2>"Acto de Habla"</h2>
+      <div class="tag tag-verde">An&aacute;lisis 3 &bull; Persuasi&oacute;n</div>
+      <h2>Redirecci&oacute;n de Inversi&oacute;n</h2>
     </div>
   </div>
   <div class="acto-habla">
@@ -319,33 +272,22 @@ html = f"""<!DOCTYPE html>
   <div class="grafica-container" style="margin-top:28px;">
     <img src="data:image/png;base64,{imgs['reto3_persuasion']}" alt="Reto 3 - Persuasion">
   </div>
-  <div class="grid-2">
-    <div class="card">
-      <h4 style="color:#1B5E20;">Decisiones de dise&ntilde;o</h4>
-      <ul class="checklist">
-        <li><span class="check-ok" style="color:#1B5E20;">&#10003;</span> T&iacute;tulo comunica acci&oacute;n, no descripci&oacute;n del gr&aacute;fico</li>
-        <li><span class="check-ok" style="color:#1B5E20;">&#10003;</span> Naranja en South (alerta) vs gris en las dem&aacute;s regiones</li>
-        <li><span class="check-ok" style="color:#1B5E20;">&#10003;</span> Subt&iacute;tulo integra Contexto &rarr; Hallazgo &rarr; Recomendaci&oacute;n</li>
-        <li><span class="check-ok" style="color:#1B5E20;">&#10003;</span> Anotaci&oacute;n directa que interpela al equipo comercial</li>
-        <li><span class="check-ok" style="color:#1B5E20;">&#10003;</span> Etiquetas con $ y % para lectura inmediata sin eje Y</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h4 style="color:#1B5E20;">Checklist de maestr&iacute;a</h4>
-      <ul class="checklist">
-        <li><span class="check-ok" style="color:#1B5E20;">&#10003;</span> T&iacute;tulo comunica una acci&oacute;n, no describe el gr&aacute;fico</li>
-        <li><span class="check-ok" style="color:#1B5E20;">&#10003;</span> Estructura Contexto &rarr; Hallazgo &rarr; Recomendaci&oacute;n legible</li>
-        <li><span class="check-ok" style="color:#1B5E20;">&#10003;</span> Acto de Habla (Convencer) declarado expl&iacute;citamente</li>
-        <li><span class="check-ok" style="color:#1B5E20;">&#10003;</span> Al ver 5 segundos, queda claro qu&eacute; decisi&oacute;n tomar</li>
-      </ul>
-    </div>
+  <div class="card" style="margin-top:32px;">
+    <h4 style="color:#1B5E20;">Decisiones de dise&ntilde;o</h4>
+    <ul class="checklist" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px;">
+      <li><span class="check-ok" style="color:#1B5E20;">&#10003;</span> T&iacute;tulo comunica acci&oacute;n, no descripci&oacute;n del gr&aacute;fico</li>
+      <li><span class="check-ok" style="color:#1B5E20;">&#10003;</span> Naranja en South (alerta) vs gris en las dem&aacute;s regiones</li>
+      <li><span class="check-ok" style="color:#1B5E20;">&#10003;</span> Subt&iacute;tulo integra Contexto &rarr; Hallazgo &rarr; Recomendaci&oacute;n</li>
+      <li><span class="check-ok" style="color:#1B5E20;">&#10003;</span> Anotaci&oacute;n directa que interpela al equipo comercial</li>
+      <li><span class="check-ok" style="color:#1B5E20;">&#10003;</span> Etiquetas con $ y % para lectura inmediata sin eje Y</li>
+    </ul>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer class="footer">
-  <strong>Taller &mdash; Evaluaci&oacute;n 1 (15%)</strong><br>
-  Universidad EAFIT &mdash; Maestr&iacute;a en Ciencia de Datos &mdash; Unidad 1<br>
+  <strong>An&aacute;lisis Estrat&eacute;gico de Negocio</strong><br>
+  Universidad EAFIT &mdash; Maestr&iacute;a en Ciencia de Datos<br>
   Dataset: <em>Superstore Sales</em> &mdash; Kaggle (rohitsahoo/sales-forecasting) &mdash; 9.800 registros &middot; 2015&ndash;2018
 </footer>
 
