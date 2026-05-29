@@ -436,8 +436,9 @@ with tab_estacionalidad:
         textfont=dict(size=10, family=FONT, color=CHART_TEXT),
         hovertemplate="<b>%{y} %{x}</b><br>$%{z:,.0f}<extra></extra>",
         colorbar=dict(
-            title="Ventas", tickformat="$,.0f",
-            tickfont=dict(color=CHART_TEXT), titlefont=dict(color=CHART_TEXT),
+            tickformat="$,.0f",
+            tickfont=dict(color=CHART_TEXT),
+            title=dict(text="Ventas", font=dict(color=CHART_TEXT)),
         ),
     ))
     chart_layout(
