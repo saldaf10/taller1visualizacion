@@ -32,17 +32,23 @@ os.makedirs("outputs", exist_ok=True)
 # horizontales facilitan leer etiquetas largas sin rotación.
 
 # Agregación: ventas totales por subcategoría
-ventas_sub = (
+ventas_sub_all = (
     df.groupby("Sub-Category")["Sales"]
     .sum()
-    .sort_values(ascending=True)   # ascending=True para que la mayor quede arriba en barh
+    .sort_values(ascending=True)
 )
+# Quitar Phones (celulares), mantener desde Chairs hacia abajo, y quitar las 5 más pequeñas
+chairs_sales = ventas_sub_all["Chairs"]
+ventas_sub = ventas_sub_all[
+    (ventas_sub_all.index != "Phones") & (ventas_sub_all <= chairs_sales)
+]
+ventas_sub = ventas_sub.iloc[5:]  # quitar las 5 categorías con menos ventas (parte inferior)
 
 fig, ax = plt.subplots(figsize=(10, 7))
 
-# Color selectivo: solo la barra mayor (Phones) resaltada en azul institucional;
+# Color selectivo: Chairs resaltada en azul institucional;
 # el resto en gris neutro para eliminar ruido visual y activar atención focal.
-colores = ["#BDBDBD" if cat != "Phones" else "#1565C0" for cat in ventas_sub.index]
+colores = ["#1565C0" if cat == "Chairs" else "#BDBDBD" for cat in ventas_sub.index]
 
 bars = ax.barh(ventas_sub.index, ventas_sub.values, color=colores, height=0.65)
 
@@ -61,7 +67,7 @@ for bar, valor in zip(bars, ventas_sub.values):
 
 # Título accionable: comunica el hallazgo, no solo describe el gráfico
 ax.set_title(
-    "Phones lidera las ventas — foco de inversión prioritario",
+    "Chairs lidera las ventas de mobiliario — prioridad de inversión",
     fontsize=13,
     fontweight="bold",
     pad=14,
@@ -105,20 +111,39 @@ mensual = df.groupby("YearMonth")["Sales"].sum().reset_index()
 mensual["YearMonth"] = mensual["YearMonth"].dt.to_timestamp()
 mensual = mensual.sort_values("YearMonth").reset_index(drop=True)
 
-# Calcular cambio porcentual para encontrar una verdadera anomalía (caída drástica)
+# Calcular cambio porcentual
 mensual["pct_change"] = mensual["Sales"].pct_change() * 100
 # Ignorar la transición de Diciembre a Enero (estacionalidad esperada)
 mensual.loc[mensual["YearMonth"].dt.month == 1, "pct_change"] = None
 
-# Identificar la mayor caída porcentual (anomalía negativa)
-idx_anomalia = mensual["pct_change"].astype(float).idxmin()
-anom_fecha = mensual.loc[idx_anomalia, "YearMonth"]
-anom_valor = mensual.loc[idx_anomalia, "Sales"]
-anom_pct = mensual.loc[idx_anomalia, "pct_change"]
+# Patrones seleccionados: mes donde empieza la bajada (rojo)
+# 2017-07 y la que sigue (2017-09), más las dos últimas (2018-06, 2018-09)
+meses_inicio_bajada = ["2015-01", "2015-07", "2017-07", "2017-09", "2018-06", "2018-09"]
+top4 = []
+pct_arr = mensual["pct_change"].values
+for mes in meses_inicio_bajada:
+    ts = pd.Timestamp(mes)
+    ds_idx = mensual.index[mensual["YearMonth"] == ts][0]
+    v_idx = ds_idx + 1
+    # Extender el verde mientras haya subidas consecutivas
+    pk_end = v_idx + 1
+    while pk_end + 1 < len(mensual):
+        next_pct = mensual.loc[pk_end + 1, "pct_change"]
+        if pd.notna(next_pct) and next_pct > 0:
+            pk_end += 1
+        else:
+            break
+    top4.append({
+        "drop_start": ds_idx,
+        "valley": v_idx,
+        "pk_end": pk_end,
+        "rise_pct": float(pct_arr[v_idx + 1]) if pd.notna(pct_arr[v_idx + 1]) else 0,
+        "drop_pct": float(pct_arr[v_idx]) if pd.notna(pct_arr[v_idx]) else 0,
+    })
 
 fig, axes = plt.subplots(1, 2, figsize=(14, 5), sharey=True)
 fig.suptitle(
-    "Contraste Antes / Después — Detección de Anomalía (Caída de Ventas)",
+    "Contraste Antes / Después — 4 Subidas Mayores con Bajada Previa",
     fontsize=13, fontweight="bold", y=1.02,
 )
 
@@ -132,34 +157,40 @@ ax1.spines["right"].set_visible(False)
 ax1.tick_params(axis="x", rotation=30, labelsize=8)
 ax1.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f"${x/1000:.0f}k"))
 
-# ── VERSIÓN BUENA (con contraste): fondo gris, figura roja en el pico
+# ── VERSIÓN BUENA (con contraste): bajadas en rojo, subidas en verde
 ax2 = axes[1]
 
 # Contexto (fondo): línea y puntos en gris neutro
 ax2.plot(mensual["YearMonth"], mensual["Sales"], color="#BDBDBD", linewidth=1.8, zorder=1)
-ax2.scatter(mensual["YearMonth"], mensual["Sales"], color="#BDBDBD", s=30, zorder=2)
+ax2.scatter(mensual["YearMonth"], mensual["Sales"], color="#BDBDBD", s=20, zorder=2)
 
-# Figura: la anomalía en rojo vibrante
-ax2.scatter(anom_fecha, anom_valor, color="#D32F2F", s=120, zorder=5, linewidths=1.5)
-ax2.plot(
-    [mensual.loc[idx_anomalia - 1, "YearMonth"], anom_fecha, mensual.loc[idx_anomalia + 1, "YearMonth"]],
-    [mensual.loc[idx_anomalia - 1, "Sales"], anom_valor, mensual.loc[idx_anomalia + 1, "Sales"]],
-    color="#D32F2F", linewidth=2.5, zorder=4,
-)
+# Resaltar los 4 patrones seleccionados
+for p in top4:
+    ds, v, pke = p["drop_start"], p["valley"], p["pk_end"]
+    # Segmento bajada en rojo
+    ax2.plot(
+        [mensual.loc[ds, "YearMonth"], mensual.loc[v, "YearMonth"]],
+        [mensual.loc[ds, "Sales"], mensual.loc[v, "Sales"]],
+        color="#D32F2F", linewidth=2.5, zorder=4,
+    )
+    ax2.scatter(mensual.loc[v, "YearMonth"], mensual.loc[v, "Sales"],
+                color="#D32F2F", s=50, zorder=5)
+    # Segmento(s) de subida en verde — pueden cubrir varios meses consecutivos
+    xs_green = [mensual.loc[i, "YearMonth"] for i in range(v, pke + 1)]
+    ys_green = [mensual.loc[i, "Sales"] for i in range(v, pke + 1)]
+    ax2.plot(xs_green, ys_green, color="#2E7D32", linewidth=2.8, zorder=4)
+    ax2.scatter(mensual.loc[pke, "YearMonth"], mensual.loc[pke, "Sales"],
+                color="#2E7D32", s=50, zorder=5)
 
-# Anotación directa sobre el gráfico: insight en 5-8 palabras
-ax2.annotate(
-    f"Caída atípica ({anom_pct:.0f}%) — {anom_fecha.strftime('%b %Y')}",
-    xy=(anom_fecha, anom_valor),
-    xytext=(anom_fecha + pd.DateOffset(months=4), anom_valor + 8000),
-    fontsize=8.5,
-    color="#B00020",
-    fontweight="bold",
-    arrowprops=dict(arrowstyle="->", color="#B00020", lw=1.4),
-    bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.85, edgecolor="none"),
-)
+# Leyenda compacta
+from matplotlib.lines import Line2D
+leyenda = [
+    Line2D([0], [0], color="#D32F2F", linewidth=2, label="Bajada previa"),
+    Line2D([0], [0], color="#2E7D32", linewidth=2, label="Subida destacada"),
+]
+ax2.legend(handles=leyenda, fontsize=8, loc="upper left", framealpha=0.85)
 
-ax2.set_title("DESPUÉS — Con contraste aplicado", fontsize=11, color="#1B5E20", fontweight="bold")
+ax2.set_title("DESPUÉS — Patrones bajada (rojo) → subida (verde) resaltados", fontsize=11, color="#1B5E20", fontweight="bold")
 ax2.spines["top"].set_visible(False)
 ax2.spines["right"].set_visible(False)
 ax2.tick_params(axis="x", rotation=30, labelsize=8)
@@ -219,17 +250,6 @@ for bar, row in zip(bars, ventas_region.itertuples()):
         color="#B71C1C" if row.Region == "South" else "#444444",
         fontweight="bold" if row.Region == "South" else "normal",
     )
-
-# Anotación de recomendación directa sobre la barra de South
-ax.annotate(
-    "Solo 17% del total —\n¿dónde está el equipo comercial?",
-    xy=(ventas_region[ventas_region["Region"] == "South"].index[0], ventas_region.loc[ventas_region["Region"] == "South", "Sales"].values[0] / 2),
-    xytext=(3.5, ventas_region["Sales"].max() * 0.70),
-    fontsize=8.5, color="#BF360C", fontweight="bold",
-    arrowprops=dict(arrowstyle="->", color="#BF360C", lw=1.3),
-    ha="right",
-    bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.85, edgecolor="none"),
-)
 
 # Título accionable: comunica la acción, no describe el gráfico
 ax.set_title(

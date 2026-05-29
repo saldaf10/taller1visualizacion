@@ -1,1 +1,5 @@
 venv
+*.MOV
+*.mov
+*.mp4
+*.avi

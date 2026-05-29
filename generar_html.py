@@ -171,11 +171,11 @@ html = f"""<!DOCTYPE html>
   </div>
   <div class="justificacion">
     <strong>Justificaci&oacute;n del tipo de gr&aacute;fico:</strong> La pregunta de negocio es de comparaci&oacute;n de
-    categor&iacute;as (&iquest;qu&eacute; subcategor&iacute;a genera m&aacute;s ventas?), no de tendencia temporal. El gr&aacute;fico de
+    categor&iacute;as (&iquest;qu&eacute; subcategor&iacute;a de mobiliario genera m&aacute;s ventas?), no de tendencia temporal. El gr&aacute;fico de
     barras horizontales ordenado de mayor a menor es el m&aacute;s eficiente para este tipo de pregunta.
     El orden descendente permite leer la jerarqu&iacute;a en un solo vistazo; la orientaci&oacute;n horizontal
     facilita leer etiquetas largas sin rotaci&oacute;n. El color selectivo (azul institucional solo en
-    Phones) activa la memoria sensorial en menos de 1 segundo aplicando el principio Data-to-Ink Ratio.
+    Chairs) activa la memoria sensorial en menos de 1 segundo aplicando el principio Data-to-Ink Ratio.
   </div>
   <div class="grafica-container" style="margin-top:28px;">
     <img src="data:image/png;base64,{imgs['reto1_jerarquia']}" alt="Reto 1 - Jerarquia">
@@ -185,7 +185,7 @@ html = f"""<!DOCTYPE html>
     <ul class="checklist" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px;">
       <li><span class="check-ok">&#10003;</span> Barras ordenadas de mayor a menor (no por defecto)</li>
       <li><span class="check-ok">&#10003;</span> Gris neutro en todas las subcategor&iacute;as excepto la l&iacute;der</li>
-      <li><span class="check-ok">&#10003;</span> Azul institucional (#1565C0) solo en Phones</li>
+      <li><span class="check-ok">&#10003;</span> Azul institucional (#1565C0) solo en Chairs</li>
       <li><span class="check-ok">&#10003;</span> Sin grilla, sin bordes, sin eje X redundante</li>
       <li><span class="check-ok">&#10003;</span> Etiquetas de valor en cada barra (reduce carga cognitiva)</li>
       <li><span class="check-ok">&#10003;</span> T&iacute;tulo accionable, no descriptivo</li>
@@ -207,10 +207,10 @@ html = f"""<!DOCTYPE html>
   <div class="justificacion naranja">
     <strong>Justificaci&oacute;n del tipo de gr&aacute;fico:</strong> Los datos tienen una dimensi&oacute;n temporal
     continua (2015&ndash;2018), lo que hace que la l&iacute;nea temporal sea la representaci&oacute;n natural para
-    mostrar tendencia y detectar anomal&iacute;as. La comparaci&oacute;n Antes/Despu&eacute;s demuestra con precisi&oacute;n
-    qu&eacute; cambi&oacute; y por qu&eacute;: en la versi&oacute;n "Antes" todos los meses tienen el mismo tratamiento
-    visual; en la versi&oacute;n "Despu&eacute;s" el contexto (gris) act&uacute;a como fondo y la ca&iacute;da de febrero
-    de 2015 (rojo) act&uacute;a como figura, aplicando el principio de figura-fondo de la Gestalt.
+    mostrar tendencia y detectar patrones de recuperaci&oacute;n. La comparaci&oacute;n Antes/Despu&eacute;s demuestra
+    con precisi&oacute;n qu&eacute; cambi&oacute; y por qu&eacute;: en la versi&oacute;n "Antes" todos los meses tienen el mismo
+    tratamiento visual; en la versi&oacute;n "Despu&eacute;s" el contexto (gris) act&uacute;a como fondo y los 4 patrones
+    bajada&rarr;subida (rojo&rarr;verde) act&uacute;an como figura, aplicando el principio de figura-fondo de la Gestalt.
   </div>
   <div class="grafica-container" style="margin-top:28px;">
     <img src="data:image/png;base64,{imgs['reto2_contraste']}" alt="Reto 2 - Contraste">
@@ -219,8 +219,9 @@ html = f"""<!DOCTYPE html>
     <h4 style="color:#E65100;">Decisiones de dise&ntilde;o</h4>
     <ul class="checklist" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px;">
       <li><span class="check-ok" style="color:#E65100;">&#10003;</span> L&iacute;nea hist&oacute;rica en gris neutro (contexto / fondo)</li>
-      <li><span class="check-ok" style="color:#E65100;">&#10003;</span> Ca&iacute;da at&iacute;pica de febrero de 2015 en rojo vibrante (figura)</li>
-      <li><span class="check-ok" style="color:#E65100;">&#10003;</span> Anotaci&oacute;n directa sobre el gr&aacute;fico con insight en 7 palabras</li>
+      <li><span class="check-ok" style="color:#E65100;">&#10003;</span> Segmento de bajada previa coloreado en rojo vibrante</li>
+      <li><span class="check-ok" style="color:#E65100;">&#10003;</span> Segmento de subida coloreado en verde (recuperaci&oacute;n)</li>
+      <li><span class="check-ok" style="color:#E65100;">&#10003;</span> Anotaci&oacute;n directa sobre la mayor subida con % de cambio</li>
       <li><span class="check-ok" style="color:#E65100;">&#10003;</span> Comparaci&oacute;n Antes/Despu&eacute;s en el mismo entregable</li>
       <li><span class="check-ok" style="color:#E65100;">&#10003;</span> T&iacute;tulos ANTES (rojo) / DESPU&Eacute;S (verde) para guiar la lectura</li>
     </ul>
